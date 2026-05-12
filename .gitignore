@@ -1,0 +1,31 @@
+# === 기존 설정 유지 ===
+.claude/
+.idea/
+*.iml
+*.iws
+*.ipr
+br_err.txt
+br_out.txt
+
+# === Backend (infoBack) 설정 ===
+infoBack/.gradle/
+infoBack/build/
+infoBack/out/
+infoBack/bin/
+infoBack/.DS_Store
+# 민감한 설정 파일 (필요 시 주석 해제)
+# infoBack/src/main/resources/application.yml
+
+# === Frontend (infoFront/frontend) 설정 ===
+# 경로가 깊으므로 정확한 디렉토리 지정이 필요합니다.
+infoProject/infoFront/frontend/node_modules/
+infoProject/infoFront/frontend/build/
+infoProject/infoFront/frontend/.env.local
+infoProject/infoFront/frontend/.env.development.local
+infoProject/infoFront/frontend/.env.test.local
+infoProject/infoFront/frontend/.env.production.local
+infoProject/infoFront/frontend/npm-debug.log*
+
+# OS 및 기타
+.DS_Store
+Thumbs.db

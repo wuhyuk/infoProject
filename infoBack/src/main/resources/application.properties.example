@@ -1,0 +1,50 @@
+spring.application.name=infoBack
+
+# 콘솔/파일 로그 UTF-8 인코딩 (한글 깨짐 방지)
+logging.charset.console=UTF-8
+logging.charset.file=UTF-8
+
+# 정책 소식 API 로그
+logging.level.com.example.infoBack.service.PolicyNewsService=INFO
+server.port=8080
+
+# H2 File-Based Database (persists across restarts)
+spring.datasource.url=jdbc:h2:file:./data/infodb;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+
+# H2 Console: http://localhost:8080/h2-console
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+
+# JPA
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.format_sql=false
+spring.jpa.defer-datasource-initialization=true
+spring.jpa.properties.hibernate.jdbc.batch_size=50
+spring.jpa.properties.hibernate.order_updates=true
+
+spring.sql.init.mode=always
+
+# 이메일 인증 (Gmail SMTP) — 선택사항
+# spring.mail.host=smtp.gmail.com
+# spring.mail.port=587
+# spring.mail.username=your-email@gmail.com
+# spring.mail.password=your-app-password
+# spring.mail.properties.mail.smtp.auth=true
+# spring.mail.properties.mail.smtp.starttls.enable=true
+
+# JWT — 아래 값을 실제 시크릿으로 교체하세요
+jwt.secret=YOUR_JWT_SECRET_BASE64
+jwt.expiration=86400000
+
+# 공공데이터 API 키 (data.go.kr)
+welfare.api.key=YOUR_DATA_GO_KR_API_KEY
+
+welfare.api.central-url=http://apis.data.go.kr/B554287/NationalWelfareInformationsV001/NationalWelfarelistV001
+welfare.api.central-detail-url=http://apis.data.go.kr/B554287/NationalWelfareInformationsV001/NationalWelfaredetailV001
+welfare.api.local-url=http://apis.data.go.kr/B554287/LocalGovernmentWelfareInformations/LocalGovernmentWelfarelist
+welfare.api.news-url=http://apis.data.go.kr/1371000/pressReleaseService/pressReleaseList
+welfare.api.sync-cron=0 0 3 * * *

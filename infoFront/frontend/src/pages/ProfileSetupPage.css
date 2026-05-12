@@ -1,0 +1,178 @@
+.profile-setup {
+  min-height: calc(100vh - 60px);
+  background: #f5f7fa;
+  padding: 40px 24px 80px;
+}
+
+.profile-setup-container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.profile-setup-intro {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.profile-setup-intro h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #1a1a2e;
+  margin: 0 0 10px;
+}
+
+.profile-setup-intro p {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.profile-setup-body {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 36px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+}
+
+.setup-error {
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+}
+
+.setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.setup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+}
+
+.setup-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.setup-row label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.setup-row select,
+.setup-row input[type="number"] {
+  padding: 9px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #333;
+  background: #fafafa;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.setup-row select:focus,
+.setup-row input[type="number"]:focus {
+  border-color: #1565c0;
+  background: white;
+}
+
+.setup-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #999;
+}
+
+.setup-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  background: #f8f9fb;
+  border-radius: 10px;
+  border: 1px solid #eee;
+}
+
+.setup-check-row label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.setup-check-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #1565c0;
+  cursor: pointer;
+}
+
+.setup-disability-grade {
+  padding-left: 28px;
+}
+
+.setup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.setup-save-btn {
+  background: #1565c0;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.setup-save-btn:hover:not(:disabled) {
+  background: #0d47a1;
+}
+
+.setup-save-btn:disabled {
+  background: #90a4ae;
+  cursor: not-allowed;
+}
+
+.setup-skip-btn {
+  background: transparent;
+  color: #999;
+  border: none;
+  padding: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+
+.setup-skip-btn:hover {
+  color: #555;
+}
+
+@media (max-width: 540px) {
+  .setup-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-setup-body {
+    padding: 24px 20px;
+  }
+}

@@ -1,0 +1,124 @@
+.admin-login-page {
+  min-height: 100vh;
+  background: #0f172a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+.admin-login-box {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.admin-login-icon {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+}
+
+.admin-login-box h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin: 0 0 8px;
+}
+
+.admin-login-desc {
+  color: #94a3b8;
+  font-size: 0.88rem;
+  margin: 0 0 28px;
+}
+
+.admin-login-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.admin-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.admin-form-row label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.admin-form-row input {
+  padding: 10px 14px;
+  background: #0f172a;
+  border: 1.5px solid #334155;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #f1f5f9;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.admin-form-row input:focus {
+  border-color: #3b82f6;
+}
+
+.admin-form-row input::placeholder {
+  color: #475569;
+}
+
+.admin-login-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+
+.admin-login-btn:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.admin-login-btn:disabled {
+  background: #334155;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.admin-back-link {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 0.82rem;
+  cursor: pointer;
+  margin-top: 20px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.admin-back-link:hover {
+  color: #94a3b8;
+}
