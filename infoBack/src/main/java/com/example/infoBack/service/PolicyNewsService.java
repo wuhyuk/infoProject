@@ -77,6 +77,14 @@ public class PolicyNewsService {
     private volatile List<AnnouncementResponse> cache;
     private volatile long cacheExpiry = 0;
 
+    public void forceRefresh() {
+        synchronized (this) {
+            cacheExpiry = 0;
+            cache = null;
+        }
+        getRecentNews(14);
+    }
+
     public List<AnnouncementResponse> getRecentNews(int days) {
         // 빠른 경로: 캐시 유효하면 즉시 반환
         if (System.currentTimeMillis() < cacheExpiry && cache != null) {
@@ -106,32 +114,26 @@ public class PolicyNewsService {
 
     private List<AnnouncementResponse> fetchNews(int days) throws Exception {
         List<PressReleaseItem> allItems = new ArrayList<>();
-        LocalDate end   = LocalDate.now();
-        LocalDate limit = end.minusDays(days);
+        LocalDate date  = LocalDate.now();
+        LocalDate limit = date.minusDays(days);
 
-        // API allows max 3-day range per request — chunk the full window
-        int chunk = 0;
+        // 이 API는 날짜 범위를 줘도 startDate 하루 치만 반환 — 1일 단위로 조회
         int consecutiveErrors = 0;
-        while (!end.isBefore(limit) && chunk < 10) {
-            LocalDate start = end.minusDays(2);
-            if (start.isBefore(limit)) start = limit;
-
-            List<PressReleaseItem> fetched = fetchChunk(start, end);
-            if (fetched.isEmpty() && consecutiveErrors > 0) {
-                // 이전 청크도 실패했으면 API 장애 상태 — 더 호출해도 의미 없음
-                log.warn("연속 2회 API 오류 — 청크 조회 중단 ({} 남음)", end);
-                break;
-            }
+        while (!date.isBefore(limit)) {
+            List<PressReleaseItem> fetched = fetchChunk(date, date);
             if (fetched.isEmpty()) {
                 consecutiveErrors++;
+                if (consecutiveErrors >= 2) {
+                    log.warn("연속 2일 API 오류 — 조회 중단 ({})", date);
+                    break;
+                }
             } else {
                 consecutiveErrors = 0;
                 allItems.addAll(fetched);
             }
 
-            end = start.minusDays(1);
-            chunk++;
-            if (!end.isBefore(limit)) {
+            date = date.minusDays(1);
+            if (!date.isBefore(limit)) {
                 // 연속 호출 rate limit 방지
                 try { Thread.sleep(300); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); break; }
             }

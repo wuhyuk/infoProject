@@ -1,5 +1,6 @@
 package com.example.infoBack.scheduler;
 
+import com.example.infoBack.service.PolicyNewsService;
 import com.example.infoBack.service.WelfareApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,20 +15,24 @@ import org.springframework.stereotype.Component;
 public class BenefitSyncScheduler {
 
     private final WelfareApiService welfareApiService;
+    private final PolicyNewsService policyNewsService;
 
-    // 앱 시작 후 백그라운드에서 초기 동기화 (기존 데이터가 있으면 스킵)
+    // 앱 시작 후 백그라운드에서 초기 동기화
     @EventListener(ApplicationReadyEvent.class)
     public void onStartup() {
         Thread t = new Thread(() -> {
             if (welfareApiService.hasData()) {
-                log.info("기존 복지 데이터 존재 — 초기 동기화 스킵 (매일 새벽 3시 정기 동기화)");
-                return;
+                log.info("기존 복지 데이터 존재 — 혜택 동기화 스킵 (매일 새벽 3시 정기 동기화)");
+            } else {
+                log.info("복지서비스 초기 동기화 시작...");
+                int count = welfareApiService.syncAll();
+                if (count > 0) {
+                    log.info("초기 동기화 완료: {}건 갱신", count);
+                }
             }
-            log.info("복지서비스 초기 동기화 시작...");
-            int count = welfareApiService.syncAll();
-            if (count > 0) {
-                log.info("초기 동기화 완료: {}건 갱신", count);
-            }
+            log.info("정책 소식 초기 로드 시작...");
+            policyNewsService.forceRefresh();
+            log.info("정책 소식 초기 로드 완료");
         }, "welfare-sync-startup");
         t.setDaemon(true);
         t.start();
@@ -39,5 +44,13 @@ public class BenefitSyncScheduler {
         log.info("복지서비스 정기 동기화 시작...");
         int count = welfareApiService.syncAll();
         log.info("정기 동기화 완료: {}건 갱신", count);
+    }
+
+    // 30분마다 정책 소식 캐시 갱신 (정각/30분)
+    @Scheduled(cron = "${welfare.api.news-refresh-cron}")
+    public void scheduledNewsRefresh() {
+        log.info("정책 소식 정기 갱신 시작...");
+        policyNewsService.forceRefresh();
+        log.info("정책 소식 갱신 완료");
     }
 }

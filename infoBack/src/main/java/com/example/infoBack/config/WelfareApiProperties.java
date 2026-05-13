@@ -15,6 +15,7 @@ public class WelfareApiProperties {
     private String localUrl;
     private String newsUrl;
     private String syncCron;
+    private String newsRefreshCron;
 
     public boolean isConfigured() {
         return key != null && !key.isBlank() && !key.equals("여기에_일반_인증키_붙여넣기");
