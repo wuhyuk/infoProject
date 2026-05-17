@@ -1,6 +1,6 @@
 .auth-page {
   min-height: calc(100vh - 60px);
-  background: #f5f7fa;
+  background: #F4F6FB;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -9,33 +9,37 @@
 
 .auth-container {
   background: white;
-  border-radius: 16px;
+  border-radius: 14px;
   padding: 40px 48px;
   width: 100%;
   max-width: 460px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  border: 1px solid #E2E8F0;
 }
 
 .auth-container h1 {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 800;
-  color: #1a1a2e;
+  color: #0F172A;
   margin: 0 0 8px;
+  letter-spacing: -0.4px;
 }
 
 .auth-desc {
-  color: #777;
+  color: #475569;
   font-size: 0.9rem;
   margin: 0 0 32px;
+  line-height: 1.6;
 }
 
 .error-msg {
-  background: #ffebee;
-  color: #c62828;
+  background: #FEF2F2;
+  color: #DC2626;
   border-radius: 8px;
   padding: 12px 16px;
   font-size: 0.88rem;
   margin-bottom: 20px;
+  border: 1px solid #FECACA;
 }
 
 .auth-form {
@@ -51,50 +55,50 @@
 }
 
 .form-row label {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  color: #333;
+  color: #374151;
 }
 
 .form-row input {
-  padding: 10px 14px;
-  border: 1.5px solid #ddd;
+  padding: 10px 12px;
+  border: 1.5px solid #E2E8F0;
   border-radius: 8px;
-  font-size: 0.95rem;
-  color: #333;
-  background: #fafafa;
-  transition: border-color 0.2s;
+  font-size: 0.93rem;
+  color: #0F172A;
+  background: #FAFBFC;
+  transition: border-color 0.18s, background 0.18s;
   outline: none;
 }
 
 .form-row input:focus {
-  border-color: #1565c0;
+  border-color: #1B4FD8;
   background: white;
 }
 
 .required {
-  color: #e53935;
+  color: #DC2626;
 }
 
 .submit-btn {
-  background: #1565c0;
+  background: #1B4FD8;
   color: white;
   border: none;
   padding: 14px;
-  border-radius: 10px;
-  font-size: 1rem;
+  border-radius: 8px;
+  font-size: 0.97rem;
   font-weight: 700;
   cursor: pointer;
   margin-top: 8px;
-  transition: background 0.2s;
+  transition: background 0.18s;
 }
 
 .submit-btn:hover:not(:disabled) {
-  background: #0d47a1;
+  background: #1239A6;
 }
 
 .submit-btn:disabled {
-  background: #90a4ae;
+  background: #94A3B8;
   cursor: not-allowed;
 }
 
@@ -102,11 +106,11 @@
   text-align: center;
   margin: 24px 0 0;
   font-size: 0.88rem;
-  color: #666;
+  color: #475569;
 }
 
 .auth-switch a {
-  color: #1565c0;
+  color: #1B4FD8;
   font-weight: 600;
   text-decoration: none;
 }
@@ -115,29 +119,26 @@
   text-decoration: underline;
 }
 
-/* 필드 에러 */
 .field-error {
-  font-size: 0.8rem;
-  color: #c62828;
+  font-size: 0.78rem;
+  color: #DC2626;
   margin-top: 2px;
 }
 
 .field-hint {
-  font-size: 0.8rem;
-  color: #888;
+  font-size: 0.78rem;
+  color: #94A3B8;
   margin-top: 2px;
 }
 
-/* 에러 border */
 .form-row input.input-error {
-  border-color: #c62828;
-  background: #fff8f8;
+  border-color: #DC2626;
+  background: #FEF9F9;
 }
 
-/* 비활성화 input */
 .form-row input.input-disabled {
-  background: #f0f0f0;
-  color: #888;
+  background: #F4F6FB;
+  color: #94A3B8;
   cursor: not-allowed;
 }
 
@@ -151,25 +152,24 @@
 }
 
 .step {
-  color: #bbb;
+  color: #C7D9FF;
   font-weight: 500;
 }
 
 .step.active {
-  color: #1565c0;
+  color: #1B4FD8;
   font-weight: 700;
 }
 
 .step.done {
-  color: #4caf50;
+  color: #059669;
   font-weight: 600;
 }
 
 .step-divider {
-  color: #ccc;
+  color: #E2E8F0;
 }
 
-/* 인증 코드 입력 래퍼 */
 .code-input-wrap {
   position: relative;
   display: flex;
@@ -185,31 +185,30 @@
   position: absolute;
   right: 12px;
   font-size: 0.82rem;
-  color: #e53935;
+  color: #DC2626;
   font-weight: 600;
   pointer-events: none;
 }
 
 .code-timer.expired {
-  color: #999;
+  color: #94A3B8;
 }
 
-/* 인증 완료 배지 */
 .verified-badge {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: #ECFDF5;
+  color: #065F46;
   border-radius: 8px;
   padding: 10px 14px;
   font-size: 0.88rem;
   font-weight: 600;
   margin-bottom: 4px;
+  border: 1px solid #A7F3D0;
 }
 
-/* 링크처럼 보이는 버튼 */
 .link-btn {
   background: none;
   border: none;
-  color: #1565c0;
+  color: #1B4FD8;
   font-size: 0.85rem;
   cursor: pointer;
   padding: 0;
@@ -219,10 +218,9 @@
 }
 
 .link-btn:hover {
-  color: #0d47a1;
+  color: #1239A6;
 }
 
-/* 아이디 입력 + 중복 확인 버튼 */
 .input-with-btn {
   display: flex;
   gap: 8px;
@@ -233,47 +231,46 @@
 }
 
 .check-btn {
-  background: #e3f2fd;
-  color: #1565c0;
-  border: 1.5px solid #90caf9;
+  background: #EEF3FF;
+  color: #1B4FD8;
+  border: 1.5px solid #C7D9FF;
   padding: 0 14px;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 0.83rem;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s;
+  transition: all 0.18s;
 }
 
 .check-btn:hover:not(:disabled) {
-  background: #bbdefb;
+  background: #DBEAFE;
 }
 
 .check-btn:disabled {
-  background: #f0f0f0;
-  color: #aaa;
-  border-color: #ddd;
+  background: #F4F6FB;
+  color: #94A3B8;
+  border-color: #E2E8F0;
   cursor: not-allowed;
 }
 
-/* 아이디 사용 가능 표시 */
 .form-row input.input-ok {
-  border-color: #43a047;
-  background: #f1f8e9;
+  border-color: #059669;
+  background: #F0FDF4;
 }
 
 .field-ok {
-  font-size: 0.8rem;
-  color: #2e7d32;
+  font-size: 0.78rem;
+  color: #065F46;
   margin-top: 2px;
 }
 
-/* 로그인 성공 메시지 배너 */
 .success-banner {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: #ECFDF5;
+  color: #065F46;
   border-radius: 8px;
   padding: 12px 16px;
   font-size: 0.88rem;
   margin-bottom: 20px;
+  border: 1px solid #A7F3D0;
 }

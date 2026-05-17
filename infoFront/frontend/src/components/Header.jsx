@@ -18,7 +18,14 @@ function Header() {
     <header className="header">
       <div className="header-inner">
         <Link to="/" className="header-logo">
-          나에게 맞는 혜택 찾기
+          <svg className="logo-icon" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="32" height="32" rx="7" fill="#1B4FD8"/>
+            <rect x="7" y="6" width="15" height="19" rx="2.5" fill="white"/>
+            <rect x="10" y="11" width="9" height="1.8" rx="0.9" fill="#C7D9FF"/>
+            <rect x="10" y="14.5" width="9" height="1.8" rx="0.9" fill="#C7D9FF"/>
+            <path d="M 10 20 L 13 23 L 20 16.5" stroke="#1B4FD8" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          정보나라
         </Link>
         <nav className="header-nav">
           <Link to="/" className={isActive('/')}>홈</Link>

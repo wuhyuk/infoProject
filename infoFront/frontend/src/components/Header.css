@@ -1,11 +1,10 @@
 .header {
-  background: #1565c0;
-  color: white;
+  background: #ffffff;
   padding: 0 24px;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 1px 0 #E2E8F0, 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .header-inner {
@@ -18,60 +17,76 @@
 }
 
 .header-logo {
-  color: white;
-  font-size: 1.2rem;
-  font-weight: 700;
+  color: #0F172A;
+  font-size: 1rem;
+  font-weight: 800;
   text-decoration: none;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.4px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
   flex-shrink: 0;
+}
+
+.logo-icon {
+  flex-shrink: 0;
+  display: block;
 }
 
 .header-nav {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 2px;
 }
 
 .header-nav a {
-  color: rgba(255,255,255,0.85);
+  color: #475569;
   text-decoration: none;
-  font-size: 0.92rem;
-  padding: 4px 0;
-  border-bottom: 2px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
 }
 
-.header-nav a:hover,
+.header-nav a:hover {
+  color: #1B4FD8;
+  background: #EEF3FF;
+}
+
 .header-nav a.active {
-  color: white;
-  border-bottom-color: white;
+  color: #1B4FD8;
+  font-weight: 700;
+  background: #EEF3FF;
 }
 
 .nav-signup {
-  background: rgba(255,255,255,0.18);
-  border-radius: 20px;
-  padding: 5px 14px !important;
-  border-bottom: none !important;
+  background: #1B4FD8 !important;
+  color: white !important;
+  font-weight: 600 !important;
+  margin-left: 8px;
 }
 
 .nav-signup:hover {
-  background: rgba(255,255,255,0.28) !important;
-  border-bottom: none !important;
+  background: #1239A6 !important;
+  color: white !important;
 }
 
 .nav-logout {
   background: transparent;
-  border: 1.5px solid rgba(255,255,255,0.5);
-  color: rgba(255,255,255,0.85);
-  padding: 5px 12px;
-  border-radius: 20px;
+  border: 1px solid #E2E8F0;
+  color: #475569;
+  padding: 6px 12px;
+  border-radius: 6px;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
+  transition: all 0.15s;
   font-family: inherit;
+  font-weight: 500;
+  margin-left: 4px;
 }
 
 .nav-logout:hover {
-  border-color: white;
-  color: white;
+  border-color: #94A3B8;
+  color: #0F172A;
 }
