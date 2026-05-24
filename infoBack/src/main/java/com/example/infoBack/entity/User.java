@@ -17,7 +17,7 @@ public class User {
     @Column(name = "email", unique = true, nullable = false, length = 50)
     private String userId;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
 
     @Column(nullable = false, length = 50)
@@ -26,6 +26,13 @@ public class User {
     @Column(nullable = true, length = 20)
     @Builder.Default
     private String role = "USER";
+
+    @Column(nullable = true, length = 20)
+    @Builder.Default
+    private String provider = "LOCAL";
+
+    @Column(name = "provider_id", nullable = true)
+    private String providerId;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private UserProfile profile;

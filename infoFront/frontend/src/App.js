@@ -10,6 +10,7 @@ import SignupPage from './pages/SignupPage';
 import MyPage from './pages/MyPage';
 import ProfileSetupPage from './pages/ProfileSetupPage';
 import AnnouncementPage from './pages/AnnouncementPage';
+import OAuthCallbackPage from './pages/OAuthCallbackPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminPage from './pages/AdminPage';
 import './App.css';
@@ -38,6 +39,7 @@ function App() {
                     <Route path="/mypage" element={<MyPage />} />
                     <Route path="/profile-setup" element={<ProfileSetupPage />} />
                     <Route path="/announcements" element={<AnnouncementPage />} />
+                    <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </main>

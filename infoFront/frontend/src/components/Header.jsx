@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import LoginRequiredModal from './LoginRequiredModal';
 import './Header.css';
 
 function Header() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, logoutUser } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleLogout = () => {
     logoutUser();
@@ -14,8 +17,18 @@ function Header() {
 
   const isActive = (path) => pathname === path ? 'active' : '';
 
+  const requireAuth = (to) => {
+    if (user) {
+      navigate(to);
+    } else {
+      setShowLoginModal(true);
+    }
+  };
+
   return (
-    <header className="header">
+    <>
+      {showLoginModal && <LoginRequiredModal onClose={() => setShowLoginModal(false)} />}
+      <header className="header">
       <div className="header-inner">
         <Link to="/" className="header-logo">
           <svg className="logo-icon" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -29,8 +42,8 @@ function Header() {
         </Link>
         <nav className="header-nav">
           <Link to="/" className={isActive('/')}>홈</Link>
-          <Link to="/filter" className={isActive('/filter')}>혜택 검색</Link>
-          <Link to="/announcements" className={isActive('/announcements')}>정책 소식</Link>
+          <button className={`nav-text-btn ${isActive('/filter')}`} onClick={() => requireAuth('/filter')}>혜택 검색</button>
+          <button className={`nav-text-btn ${isActive('/announcements')}`} onClick={() => requireAuth('/announcements')}>정책 소식</button>
           {user ? (
             <>
               <Link to="/mypage" className={isActive('/mypage')}>{user.name}님</Link>
@@ -45,6 +58,7 @@ function Header() {
         </nav>
       </div>
     </header>
+    </>
   );
 }
 

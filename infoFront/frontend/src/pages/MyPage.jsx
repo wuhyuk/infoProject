@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getMyProfile, updateProfile } from '../api/userApi';
+import { getMyProfile, updateProfile, updateAccount } from '../api/userApi';
 import { useAuth } from '../context/AuthContext';
 import './MyPage.css';
 
@@ -14,9 +14,16 @@ const BIRTH_YEARS = Array.from({ length: 80 }, (_, i) => currentYear - 10 - i);
 const DISABILITY_GRADES = ['1급', '2급', '3급', '4급', '5급', '6급'];
 
 function MyPage() {
-  const { logoutUser } = useAuth();
+  const { logoutUser, updateUserName } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
+
+  // 계정 정보 수정 상태
+  const [accountForm, setAccountForm] = useState({ name: '', currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [accountSaving, setAccountSaving] = useState(false);
+  const [accountSuccess, setAccountSuccess] = useState('');
+  const [accountError, setAccountError] = useState('');
+
   const [form, setForm] = useState({
     birthYear: '',
     gender: '',
@@ -40,6 +47,7 @@ function MyPage() {
     getMyProfile()
       .then(({ data }) => {
         setProfile(data);
+        setAccountForm((prev) => ({ ...prev, name: data.name || '' }));
         setForm({
           birthYear: data.birthYear || '',
           gender: data.gender || '',
@@ -95,6 +103,51 @@ function MyPage() {
       setError(err.response?.data?.message || '저장에 실패했습니다.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleAccountChange = (e) => {
+    const { name, value } = e.target;
+    setAccountForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAccountSubmit = async (e) => {
+    e.preventDefault();
+    setAccountSuccess('');
+    setAccountError('');
+
+    const { name, currentPassword, newPassword, confirmPassword } = accountForm;
+
+    if (!name.trim()) {
+      setAccountError('이름을 입력해주세요.');
+      return;
+    }
+    if (newPassword && newPassword !== confirmPassword) {
+      setAccountError('새 비밀번호와 확인이 일치하지 않습니다.');
+      return;
+    }
+
+    setAccountSaving(true);
+    try {
+      const payload = { name: name.trim() };
+      if (newPassword) {
+        payload.currentPassword = currentPassword;
+        payload.newPassword = newPassword;
+      }
+      const { data } = await updateAccount(payload);
+      if (newPassword) {
+        logoutUser();
+        navigate('/login', { state: { message: '비밀번호가 변경됐습니다. 다시 로그인해주세요.' } });
+        return;
+      }
+      setProfile((prev) => ({ ...prev, name: data.name }));
+      updateUserName(data.name);
+      setAccountForm((prev) => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }));
+      setAccountSuccess('계정 정보가 저장됐습니다.');
+    } catch (err) {
+      setAccountError(err.response?.data?.message || '저장에 실패했습니다.');
+    } finally {
+      setAccountSaving(false);
     }
   };
 
@@ -276,6 +329,77 @@ function MyPage() {
 
             <button type="submit" className="save-btn" disabled={saving}>
               {saving ? '저장 중...' : '저장하기'}
+            </button>
+          </form>
+        </div>
+
+        <div className="mypage-body account-section">
+          <h2>계정 정보 수정</h2>
+          <p className="mypage-desc">이름 변경 또는 비밀번호를 변경할 수 있습니다.</p>
+
+          {accountSuccess && <div className="success-msg">{accountSuccess}</div>}
+          {accountError && <div className="error-msg">{accountError}</div>}
+
+          <form onSubmit={handleAccountSubmit} className="profile-form">
+            <div className="account-group">
+              <div className="account-group-label">이름</div>
+              <div className="form-row">
+                <label>새 이름</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={accountForm.name}
+                  onChange={handleAccountChange}
+                  placeholder="이름 입력"
+                  className="account-input"
+                />
+              </div>
+            </div>
+
+            <div className="account-divider" />
+
+            <div className="account-group">
+              <div className="account-group-label">비밀번호 변경 <span className="account-group-optional">(선택)</span></div>
+              <div className="form-row">
+                <label>현재 비밀번호</label>
+                <input
+                  type="password"
+                  name="currentPassword"
+                  value={accountForm.currentPassword}
+                  onChange={handleAccountChange}
+                  placeholder="현재 비밀번호 입력"
+                  className="account-input"
+                />
+              </div>
+              <div className="form-row">
+                <label>새 비밀번호</label>
+                <input
+                  type="password"
+                  name="newPassword"
+                  value={accountForm.newPassword}
+                  onChange={handleAccountChange}
+                  placeholder="새 비밀번호 (6자 이상)"
+                  className="account-input"
+                />
+              </div>
+              <div className="form-row">
+                <label>새 비밀번호 확인</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={accountForm.confirmPassword}
+                  onChange={handleAccountChange}
+                  placeholder="새 비밀번호 다시 입력"
+                  className={`account-input${accountForm.newPassword && accountForm.confirmPassword && accountForm.newPassword !== accountForm.confirmPassword ? ' input-mismatch' : ''}`}
+                />
+                {accountForm.newPassword && accountForm.confirmPassword && accountForm.newPassword !== accountForm.confirmPassword && (
+                  <span className="mismatch-hint">비밀번호가 일치하지 않습니다.</span>
+                )}
+              </div>
+            </div>
+
+            <button type="submit" className="save-btn" disabled={accountSaving}>
+              {accountSaving ? '저장 중...' : '저장하기'}
             </button>
           </form>
         </div>

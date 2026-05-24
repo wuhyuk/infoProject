@@ -1,5 +1,6 @@
 package com.example.infoBack.controller;
 
+import com.example.infoBack.dto.UserAccountUpdateRequest;
 import com.example.infoBack.dto.UserProfileResponse;
 import com.example.infoBack.dto.UserProfileUpdateRequest;
 import com.example.infoBack.service.UserService;
@@ -26,5 +27,12 @@ public class UserController {
             Authentication auth,
             @Valid @RequestBody UserProfileUpdateRequest request) {
         return ResponseEntity.ok(userService.updateProfile(auth.getName(), request));
+    }
+
+    @PutMapping("/me/account")
+    public ResponseEntity<UserProfileResponse> updateAccount(
+            Authentication auth,
+            @RequestBody UserAccountUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateAccount(auth.getName(), request));
     }
 }

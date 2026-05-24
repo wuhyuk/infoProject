@@ -222,6 +222,66 @@
   cursor: not-allowed;
 }
 
+/* ===== 계정 정보 수정 섹션 ===== */
+.account-section {
+  margin-top: 20px;
+}
+
+.account-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.account-group-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.account-group-optional {
+  font-weight: 400;
+  color: #CBD5E1;
+}
+
+.account-input {
+  padding: 9px 12px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #0F172A;
+  background: #FAFBFC;
+  transition: border-color 0.18s, background 0.18s;
+  outline: none;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.account-input:focus {
+  border-color: #1B4FD8;
+  background: white;
+}
+
+.account-input.input-mismatch {
+  border-color: #DC2626;
+  background: #FEF9F9;
+}
+
+.mismatch-hint {
+  font-size: 0.75rem;
+  color: #DC2626;
+  margin-top: 2px;
+}
+
+.account-divider {
+  border: none;
+  border-top: 1px solid #F1F5F9;
+  margin: 4px 0;
+}
+
 @media (max-width: 540px) {
   .form-grid {
     grid-template-columns: 1fr;

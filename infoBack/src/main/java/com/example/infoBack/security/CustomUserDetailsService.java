@@ -20,9 +20,10 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + userId));
 
         String role = user.getRole() != null ? user.getRole() : "USER";
+        String password = user.getPassword() != null ? user.getPassword() : "{noop}SOCIAL_OAUTH2";
         return User.builder()
                 .username(user.getUserId())
-                .password(user.getPassword())
+                .password(password)
                 .roles(role)
                 .build();
     }

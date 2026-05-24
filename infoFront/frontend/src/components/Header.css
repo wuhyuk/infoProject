@@ -72,6 +72,30 @@
   color: white !important;
 }
 
+.nav-text-btn {
+  background: transparent;
+  border: none;
+  color: #475569;
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  font-family: inherit;
+}
+
+.nav-text-btn:hover {
+  color: #1B4FD8;
+  background: #EEF3FF;
+}
+
+.nav-text-btn.active {
+  color: #1B4FD8;
+  font-weight: 700;
+  background: #EEF3FF;
+}
+
 .nav-logout {
   background: transparent;
   border: 1px solid #E2E8F0;

@@ -1,0 +1,125 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+  animation: overlay-in 0.18s ease;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 44px 40px 36px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+  text-align: center;
+  animation: card-in 0.2s ease;
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #94A3B8;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: #475569;
+  background: #F4F6FB;
+}
+
+.modal-icon {
+  font-size: 2.6rem;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.modal-title {
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 12px;
+  letter-spacing: -0.4px;
+}
+
+.modal-desc {
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.75;
+  margin: 0 0 28px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-btn-primary {
+  flex: 1;
+  background: #1B4FD8;
+  color: #ffffff;
+  border: none;
+  padding: 13px 0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.modal-btn-primary:hover {
+  background: #1239A6;
+}
+
+.modal-btn-secondary {
+  flex: 1;
+  background: #F4F6FB;
+  color: #374151;
+  border: 1.5px solid #E2E8F0;
+  padding: 13px 0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.modal-btn-secondary:hover {
+  background: #EEF3FF;
+  border-color: #C7D9FF;
+  color: #1B4FD8;
+}
+
+@media (max-width: 480px) {
+  .modal-card {
+    padding: 36px 24px 28px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+}

@@ -1,8 +1,21 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import LoginRequiredModal from '../components/LoginRequiredModal';
 import './HomePage.css';
 
 function HomePage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const requireAuth = (to) => {
+    if (user) {
+      navigate(to);
+    } else {
+      setShowLoginModal(true);
+    }
+  };
 
   const categories = [
     { label: '주거 지원', icon: '🏠', desc: '임대주택 · 주거급여 · 전세자금' },
@@ -17,6 +30,7 @@ function HomePage() {
 
   return (
     <div className="home">
+      {showLoginModal && <LoginRequiredModal onClose={() => setShowLoginModal(false)} />}
       <section className="hero">
         <div className="hero-inner">
           <div className="hero-text">
@@ -31,10 +45,10 @@ function HomePage() {
               받을 수 있는 혜택과 지원금을 한눈에 확인하세요.
             </p>
             <div className="hero-actions">
-              <button className="cta-btn-primary" onClick={() => navigate('/filter')}>
+              <button className="cta-btn-primary" onClick={() => requireAuth('/filter')}>
                 내 혜택 찾기
               </button>
-              <button className="cta-btn-secondary" onClick={() => navigate('/announcements')}>
+              <button className="cta-btn-secondary" onClick={() => requireAuth('/announcements')}>
                 정책 소식 보기
               </button>
             </div>
@@ -70,7 +84,7 @@ function HomePage() {
               <button
                 key={cat.label}
                 className="category-item"
-                onClick={() => navigate('/filter')}
+                onClick={() => requireAuth('/filter')}
               >
                 <span className="cat-icon">{cat.icon}</span>
                 <div className="cat-info">
