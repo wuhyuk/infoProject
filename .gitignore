@@ -1,31 +1,36 @@
-# === 기존 설정 유지 ===
-.claude/
+# ─── IDE ──────────────────────────────────────────────────────────────────────
 .idea/
 *.iml
 *.iws
 *.ipr
+
+# ─── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── 빌드 로그 ────────────────────────────────────────────────────────────────
 br_err.txt
 br_out.txt
 
-# === Backend (infoBack) 설정 ===
+# ─── Backend (infoBack) ───────────────────────────────────────────────────────
 infoBack/.gradle/
 infoBack/build/
 infoBack/out/
 infoBack/bin/
-infoBack/.DS_Store
-# 민감한 설정 파일 (필요 시 주석 해제)
-# infoBack/src/main/resources/application.yml
+infoBack/data/
 
-# === Frontend (infoFront/frontend) 설정 ===
-# 경로가 깊으므로 정확한 디렉토리 지정이 필요합니다.
-infoProject/infoFront/frontend/node_modules/
-infoProject/infoFront/frontend/build/
-infoProject/infoFront/frontend/.env.local
-infoProject/infoFront/frontend/.env.development.local
-infoProject/infoFront/frontend/.env.test.local
-infoProject/infoFront/frontend/.env.production.local
-infoProject/infoFront/frontend/npm-debug.log*
+# application.properties는 infoBack/.gitignore 에서도 제외됨
+# 새로 클론한 경우: application.properties.example → application.properties 복사 후 값 채우기
+infoBack/src/main/resources/application.properties
 
-# OS 및 기타
-.DS_Store
-Thumbs.db
+# ─── Frontend (infoFront/frontend) ────────────────────────────────────────────
+infoFront/frontend/node_modules/
+infoFront/frontend/build/
+infoFront/frontend/.env
+infoFront/frontend/.env.local
+infoFront/frontend/.env.development.local
+infoFront/frontend/.env.test.local
+infoFront/frontend/.env.production.local
+infoFront/frontend/npm-debug.log*
+infoFront/frontend/yarn-debug.log*
+infoFront/frontend/yarn-error.log*
