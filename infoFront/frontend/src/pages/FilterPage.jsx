@@ -25,9 +25,9 @@ const FAMILY_OPTIONS = [
   { value: '한부모', label: '한부모 가족' },
 ];
 
-const DISABILITY_GRADES = ['1급', '2급', '3급', '4급', '5급', '6급'];
+const DISABILITY_GRADES = ['경증', '중증'];
 
-// 1-3급 → 중증, 4-6급 → 경증 (백엔드 BenefitService 기준에 맞춰 변환)
+// DB에 구 등급(1~6급)이 저장된 경우를 위한 하위 호환 변환
 const toSeverity = (grade) => {
   if (!grade) return null;
   const n = parseInt(grade, 10);

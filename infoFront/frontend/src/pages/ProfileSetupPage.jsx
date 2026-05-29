@@ -12,7 +12,7 @@ const REGIONS = [
 const currentYear = new Date().getFullYear();
 const BIRTH_YEARS = Array.from({ length: 80 }, (_, i) => currentYear - 10 - i);
 
-const DISABILITY_GRADES = ['1급', '2급', '3급', '4급', '5급', '6급'];
+const DISABILITY_GRADES = ['경증', '중증'];
 
 const EMPTY_FORM = {
   birthYear: '',

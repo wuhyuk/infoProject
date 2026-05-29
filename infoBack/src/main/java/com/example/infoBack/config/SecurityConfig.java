@@ -66,7 +66,6 @@ public class SecurityConfig {
                 })
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/oauth2/authorization/**").permitAll()
                 .requestMatchers("/login/oauth2/code/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()

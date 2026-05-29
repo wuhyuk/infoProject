@@ -1,4 +1,3 @@
-HELP.md
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -39,5 +38,7 @@ out/
 ### H2 Database files ###
 data/
 
-### Sensitive config (copy application.properties.example → application.properties and fill in secrets) ###
-src/main/resources/application.properties
+### Secrets ###
+.env
+.env.local
+
