@@ -87,34 +87,41 @@ CREATE DATABASE infodb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ### 3. 백엔드 환경 설정
 
+`application.properties`는 이미 저장소에 포함되어 있습니다. MySQL 비밀번호 등 본인 환경에 맞게 수정하세요.
+
 ```bash
-cd infoBack/src/main/resources
-cp application.properties.example application.properties
+# infoBack/src/main/resources/application.properties 열어서 수정
 ```
 
-`application.properties`를 열어 아래 항목을 실제 값으로 수정하세요.
+| 항목 | 기본값 | 설명 |
+|------|--------|------|
+| `DB_USERNAME` | `root` | MySQL 사용자 이름 |
+| `DB_PASSWORD` | `admin` | MySQL 비밀번호 — **반드시 본인 값으로 변경** |
+| `JWT_SECRET` | 기본 키 포함 | 운영 시 `openssl rand -base64 32`로 교체 권장 |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | 없음 | Google OAuth (선택사항) |
+| `NAVER_CLIENT_ID` / `NAVER_CLIENT_SECRET` | 기본값 포함 | Naver OAuth (선택사항) |
+| `WELFARE_API_KEY` | 기본값 포함 | data.go.kr 인증키 (선택사항) |
+| `ADMIN_USERNAME` / `ADMIN_PASSWORD` | `admin` / `admin` | 관리자 계정 (운영 시 변경 권장) |
 
-| 항목 | 설명 |
-|------|------|
-| `${DB_USERNAME:root}` | MySQL 사용자 이름 |
-| `${DB_PASSWORD:your_mysql_password}` | MySQL 비밀번호 |
-| `${JWT_SECRET:...}` | JWT 서명 키 (`openssl rand -base64 32` 로 생성) |
-| `${GOOGLE_CLIENT_ID:...}` | Google OAuth Client ID |
-| `${GOOGLE_CLIENT_SECRET:...}` | Google OAuth Client Secret |
-| `${NAVER_CLIENT_ID:...}` | Naver OAuth Client ID |
-| `${NAVER_CLIENT_SECRET:...}` | Naver OAuth Client Secret |
-| `${WELFARE_API_KEY:}` | data.go.kr 인증키 (선택사항) |
+환경 변수로 주입하려면 OS 환경 변수나 IDE 실행 설정에서 `DB_PASSWORD=비밀번호` 형식으로 설정하면 됩니다.
 
 > **OAuth2는 선택사항입니다.** 소셜 로그인 없이 이메일 로그인만 사용한다면 Google/Naver 항목을 비워도 됩니다.
 
 ### 4. 프론트엔드 환경 설정
 
+`infoFront/frontend/.env` 파일을 직접 생성하세요.
+
 ```bash
 cd infoFront/frontend
-cp .env.example .env
 ```
 
-로컬 개발 환경이라면 기본값(`http://localhost:8080`) 그대로 사용해도 됩니다.
+`.env` 파일을 아래 내용으로 생성합니다.
+
+```env
+REACT_APP_BACKEND_URL=http://localhost:8080
+```
+
+로컬 개발 환경이라면 위 값 그대로 사용하면 됩니다.
 
 ### 5. 백엔드 실행
 
@@ -143,10 +150,8 @@ npm start
 
 | 파일 | git 포함 | 용도 |
 |------|----------|------|
-| `infoBack/src/main/resources/application.properties.example` | ✅ | 설정 템플릿 (빈 값) |
-| `infoBack/src/main/resources/application.properties` | ❌ | 실제 로컬 설정 (gitignore) |
-| `infoFront/frontend/.env.example` | ✅ | 환경 변수 템플릿 |
-| `infoFront/frontend/.env` | ❌ | 실제 로컬 환경 변수 (gitignore) |
+| `infoBack/src/main/resources/application.properties` | ✅ | 기본값 포함한 백엔드 설정 (DB 비밀번호 등 로컬에서 수정) |
+| `infoFront/frontend/.env` | ❌ gitignore | 프론트엔드 환경 변수 (직접 생성 필요) |
 
 ---
 

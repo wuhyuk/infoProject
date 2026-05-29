@@ -27,45 +27,68 @@ npm run build  # 프로덕션 빌드
 ## 아키텍처
 
 ### 백엔드 (`infoBack/src/main/java/com/example/infoBack/`)
-config/SecurityConfig.java          JWT 필터 체인, CORS, PasswordEncoder, AuthenticationManager
+config/
+├── SecurityConfig.java         JWT 필터 체인, CORS, OAuth2, PasswordEncoder
+├── AdminInitializer.java       최초 실행 시 관리자 계정 자동 생성
+├── WelfareApiProperties.java   data.go.kr API URL/Key 바인딩
+└── WelfareConfig.java          RestTemplate 빈 등록
 security/
-├── JwtUtil.java                    토큰 발급/검증 (HS256, Base64 secret)
-├── JwtFilter.java                  OncePerRequestFilter — Authorization 헤더 파싱
+├── JwtUtil.java                토큰 발급/검증 (HS256, Base64 secret)
+├── JwtFilter.java              OncePerRequestFilter — Authorization 헤더 파싱
 └── CustomUserDetailsService.java   UserDetailsService 구현 (email로 조회)
 entity/
-├── User.java                       users 테이블 (email unique, @OneToOne → UserProfile)
-└── UserProfile.java                user_profile 테이블 (birthYear, gender, region 등)
+├── User.java                   users 테이블 (email unique, @OneToOne → UserProfile)
+├── UserProfile.java            user_profile 테이블 (birthYear, gender, region 등)
+└── Benefit.java                benefit 테이블
 dto/
 ├── SignupRequest / LoginRequest / LoginResponse
 ├── UserProfileUpdateRequest / UserProfileResponse (from(User) 정적 팩토리)
 ├── BenefitFilterRequest / BenefitResponse
 └── ErrorResponse
 controller/
-├── AuthController    POST /api/auth/signup, POST /api/auth/login  (public)
-├── UserController    GET/PUT /api/users/me  (JWT 필요)
-└── BenefitController GET /api/benefits, POST /api/benefits/filter (public)
-exception/GlobalExceptionHandler    IllegalArgumentException→400, BadCredentials→401
+├── AuthController        POST /api/auth/signup, /login, /send-code, /verify-code (public)
+├── UserController        GET/PUT /api/users/me  (JWT 필요)
+├── BenefitController     GET /api/benefits, POST /api/benefits/filter (public)
+├── AdminController       /api/admin/** (관리자 권한)
+└── AnnouncementController GET /api/announcements (public)
+service/
+├── AuthService           회원가입, 로그인, 이메일 인증 코드
+├── UserService           프로필 조회/수정
+├── BenefitService        필터링 로직
+├── WelfareApiService     data.go.kr 복지 API 연동
+└── PolicyNewsService     공공데이터 보도자료 API (30분 주기 캐시)
+scheduler/BenefitSyncScheduler   data.go.kr 매일 새벽 3시 자동 동기화
+exception/GlobalExceptionHandler  IllegalArgumentException→400, BadCredentials→401
 
-**인증 흐름**: 로그인 → JWT 발급 → 클라이언트가 `Authorization: Bearer <token>` 헤더로 전송 → JwtFilter 검증 → SecurityContext 설정
+**인증 흐름**: 로그인 → JWT 발급 → 클라이언트가 `Authorization: Bearer <token>` 헤더로 전송 → JwtFilter 검증 → SecurityContext 설정  
+**소셜 로그인**: Google / Naver OAuth2 — `/login/oauth2/code/{provider}` 콜백 → JWT 발급 → 프론트 `/oauth/callback`으로 리다이렉트
 
-**DB**: H2 인메모리 (`jdbc:h2:mem:infodb`), H2 콘솔: `http://localhost:8080/h2-console`
-`spring.jpa.defer-datasource-initialization=true` 로 Hibernate 스키마 생성 후 `data.sql` 실행
+**DB**: MySQL 8.0 (`jdbc:mysql://localhost:3306/infodb`)  
+`spring.jpa.hibernate.ddl-auto=update` 로 스키마 자동 관리, 최초 실행 시 `data.sql` 삽입
 
 ### 프론트엔드 (`infoFront/frontend/src/`)
-context/AuthContext.jsx       user 상태 + loginUser/logoutUser (localStorage 기반)
+context/
+├── AuthContext.jsx        user 상태 + loginUser/logoutUser (localStorage 기반)
+└── AdminContext.jsx       관리자 인증 상태 관리
 api/
-├── axiosInstance.js          JWT 인터셉터 + 401 시 자동 로그아웃
-├── authApi.js                signup, login
-├── userApi.js                getMyProfile, updateProfile
-└── benefitApi.js             getAllBenefits, getFilteredBenefits
+├── axiosInstance.js       JWT 인터셉터 + 401 시 자동 로그아웃
+├── authApi.js             signup, login, sendCode, verifyCode
+├── userApi.js             getMyProfile, updateProfile
+├── benefitApi.js          getAllBenefits, getFilteredBenefits
+└── adminApi.js            관리자용 CRUD API
 pages/
-├── HomePage                  소개 + CTA
-├── LoginPage / SignupPage    인증 (AuthPage.css 공유)
-├── FilterPage                혜택 검색 폼 — 로그인 시 프로필 자동 불러오기
-├── ResultPage                navigation state로 결과 수신
-└── MyPage                    프로필 조회/수정 + 로그아웃
+├── HomePage               소개 + CTA
+├── LoginPage / SignupPage 인증 (AuthPage.css 공유)
+├── FilterPage             혜택 검색 폼 — 로그인 시 프로필 자동 불러오기
+├── ResultPage             navigation state로 결과 수신
+├── MyPage                 프로필 조회/수정 + 로그아웃
+├── ProfileSetupPage       소셜 로그인 후 초기 프로필 설정
+├── OAuthCallbackPage      OAuth2 콜백 처리 (토큰 저장 후 리다이렉트)
+├── AnnouncementPage       정책 소식 목록
+├── AdminPage              관리자 대시보드 (혜택 CRUD, 회원 조회, 통계)
+└── AdminLoginPage         관리자 전용 로그인
 
-**라우팅**: `/` `/filter` `/results` `/login` `/signup` `/mypage`
+**라우팅**: `/` `/filter` `/results` `/login` `/signup` `/mypage` `/profile-setup` `/oauth/callback` `/announcements` `/admin` `/admin/login`  
 **프록시**: `package.json` `"proxy": "http://localhost:8080"` — 개발 시 /api/* 자동 전달
 
 ### DB 스키마
@@ -74,7 +97,7 @@ pages/
 |--------|-----------|
 | `users` | id, email(unique), password(bcrypt), name, created_at |
 | `user_profile` | id, user_id(FK), birth_year, gender, region, income_level, employment_status, has_disability, family_type |
-| `benefit` | id, title, category, min_age, max_age, target_region, max_income_level, employment_status, requires_disability, family_type, apply_url, organization |
+| `benefit` | id, title, category, description, min_age, max_age, target_region, max_income_level, employment_status, requires_disability, disability_grade, family_type, requires_gender, requires_foreign_worker, requires_north_korean, min_children, apply_url, organization |
 
 ### 필터링 조건 (BenefitService)
 
