@@ -37,6 +37,7 @@ function AnnouncementPage() {
   const [activeDept, setActiveDept] = useState('ALL');
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     getAnnouncements(30)
@@ -45,29 +46,39 @@ function AnnouncementPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  // 검색어 필터 (빈 문자열이면 전체 news 그대로 반환)
+  const searchFiltered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return news;
+    return news.filter((n) =>
+      n.title?.toLowerCase().includes(q) ||
+      n.subTitle?.toLowerCase().includes(q)
+    );
+  }, [news, searchQuery]);
+
   // 데이터에 실제 존재하는 deptCode 수집 → DEPT_ORDER 순으로 정렬
   const availableDepts = useMemo(() => {
-    const existing = new Set(news.map((n) => n.deptCode).filter(Boolean));
+    const existing = new Set(searchFiltered.map((n) => n.deptCode).filter(Boolean));
     const ordered  = DEPT_ORDER.filter((code) => existing.has(code));
     const others   = [...existing].filter((code) => !DEPT_ORDER.includes(code)).sort();
     return ['ALL', ...ordered, ...others];
-  }, [news]);
+  }, [searchFiltered]);
 
   // 부처별 기사 수 (영어 코드 기준)
   const countByDept = useMemo(() => {
     const map = {};
-    news.forEach((n) => {
+    searchFiltered.forEach((n) => {
       const code = n.deptCode || '(unknown)';
       map[code] = (map[code] ?? 0) + 1;
     });
     return map;
-  }, [news]);
+  }, [searchFiltered]);
 
   // 필터링: deptCode (영어) 완전 일치 비교 — 한글 비교 없음
   const filtered = useMemo(() => {
-    if (activeDept === 'ALL') return news;
-    return news.filter((n) => n.deptCode === activeDept);
-  }, [news, activeDept]);
+    if (activeDept === 'ALL') return searchFiltered;
+    return searchFiltered.filter((n) => n.deptCode === activeDept);
+  }, [searchFiltered, activeDept]);
 
   return (
     <div className="announce-page">
@@ -79,13 +90,35 @@ function AnnouncementPage() {
       </div>
 
       <div className="announce-body">
-        {/* 카테고리 필터 */}
+        {/* 검색 바 */}
+        {!loading && news.length > 0 && (
+          <div className="announce-search-wrap">
+            <input
+              type="text"
+              className="announce-search-input"
+              placeholder="제목, 내용으로 검색..."
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setActiveDept('ALL'); }}
+            />
+            {searchQuery && (
+              <button
+                className="announce-search-clear"
+                onClick={() => { setSearchQuery(''); setActiveDept('ALL'); }}
+                aria-label="검색어 지우기"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* 부처 필터 */}
         {!loading && news.length > 0 && (
           <div className="dept-filter">
             {availableDepts.map((code) => {
               const isActive = activeDept === code;
               const label    = code === 'ALL' ? '전체' : getKrName(code);
-              const count    = code === 'ALL' ? news.length : (countByDept[code] ?? 0);
+              const count    = code === 'ALL' ? searchFiltered.length : (countByDept[code] ?? 0);
               return (
                 <button
                   key={code}
@@ -113,6 +146,8 @@ function AnnouncementPage() {
             <div className="announce-status">
               {news.length === 0
                 ? 'API 연동 후 최신 정책 소식이 표시됩니다.'
+                : searchQuery
+                ? `"${searchQuery}" 검색 결과가 없습니다.`
                 : `${getKrName(activeDept)} 관련 소식이 없습니다.`}
             </div>
           ) : (

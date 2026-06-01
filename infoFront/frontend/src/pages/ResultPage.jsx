@@ -9,24 +9,36 @@ function ResultPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('전체');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const results = useMemo(() => state?.results ?? [], [state]);
   const profile = state?.profile ?? {};
 
+  // 검색어 필터 (빈 문자열이면 전체 결과 그대로 반환)
+  const searchFiltered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return results;
+    return results.filter((r) =>
+      r.title?.toLowerCase().includes(q) ||
+      r.description?.toLowerCase().includes(q) ||
+      r.organization?.toLowerCase().includes(q)
+    );
+  }, [results, searchQuery]);
+
   // 결과에 실제로 존재하는 카테고리만 추출 (정해진 순서 유지)
   const categories = useMemo(() => {
-    const existing = new Set(results.map((r) => r.category).filter(Boolean));
+    const existing = new Set(searchFiltered.map((r) => r.category).filter(Boolean));
     return ['전체', ...CATEGORY_ORDER.slice(1).filter((c) => existing.has(c))];
-  }, [results]);
+  }, [searchFiltered]);
 
   // 카테고리별 개수
   const countByCategory = useMemo(() => {
-    const map = { 전체: results.length };
-    results.forEach((r) => {
+    const map = { 전체: searchFiltered.length };
+    searchFiltered.forEach((r) => {
       if (r.category) map[r.category] = (map[r.category] || 0) + 1;
     });
     return map;
-  }, [results]);
+  }, [searchFiltered]);
 
   if (!state?.results) {
     navigate('/filter');
@@ -34,8 +46,8 @@ function ResultPage() {
   }
 
   const filtered = activeCategory === '전체'
-    ? results
-    : results.filter((r) => r.category === activeCategory);
+    ? searchFiltered
+    : searchFiltered.filter((r) => r.category === activeCategory);
 
   return (
     <div className="result-page">
@@ -56,6 +68,30 @@ function ResultPage() {
           </button>
         </div>
       </div>
+
+      {/* 검색 바 */}
+      {results.length > 0 && (
+        <div className="result-search-bar">
+          <div className="result-search-inner">
+            <input
+              type="text"
+              className="result-search-input"
+              placeholder="혜택 이름, 기관, 설명으로 검색..."
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setActiveCategory('전체'); }}
+            />
+            {searchQuery && (
+              <button
+                className="result-search-clear"
+                onClick={() => { setSearchQuery(''); setActiveCategory('전체'); }}
+                aria-label="검색어 지우기"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* 카테고리 필터 */}
       {results.length > 0 && (
@@ -87,11 +123,21 @@ function ResultPage() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="empty-state">
-            <p>이 카테고리에 해당하는 혜택이 없습니다.</p>
+            {searchQuery ? (
+              <>
+                <p>"{searchQuery}"에 해당하는 혜택이 없습니다.</p>
+                <button className="back-btn-center" onClick={() => setSearchQuery('')}>검색어 지우기</button>
+              </>
+            ) : (
+              <p>이 카테고리에 해당하는 혜택이 없습니다.</p>
+            )}
           </div>
         ) : (
           <>
             <p className="filtered-count">
+              {searchQuery && (
+                <span className="active-cat-label">"{searchQuery}"</span>
+              )}
               {activeCategory !== '전체' && (
                 <span className="active-cat-label">{activeCategory}</span>
               )}

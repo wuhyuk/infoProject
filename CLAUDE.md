@@ -80,11 +80,11 @@ pages/
 ├── HomePage               소개 + CTA
 ├── LoginPage / SignupPage 인증 (AuthPage.css 공유)
 ├── FilterPage             혜택 검색 폼 — 로그인 시 프로필 자동 불러오기
-├── ResultPage             navigation state로 결과 수신
+├── ResultPage             navigation state로 결과 수신 + 인라인 검색(제목·설명·기관) + 카테고리 필터
 ├── MyPage                 프로필 조회/수정 + 로그아웃
 ├── ProfileSetupPage       소셜 로그인 후 초기 프로필 설정
 ├── OAuthCallbackPage      OAuth2 콜백 처리 (토큰 저장 후 리다이렉트)
-├── AnnouncementPage       정책 소식 목록
+├── AnnouncementPage       정책 소식 목록 + 인라인 검색(제목·부제목) + 부처별 필터
 ├── AdminPage              관리자 대시보드 (혜택 CRUD, 회원 조회, 통계)
 └── AdminLoginPage         관리자 전용 로그인
 
