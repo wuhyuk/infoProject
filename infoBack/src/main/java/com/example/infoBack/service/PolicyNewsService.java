@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.HtmlUtils;
 
 import java.text.Normalizer;
 import java.time.LocalDate;
@@ -272,12 +273,17 @@ public class PolicyNewsService {
         String deptCode = DEPT_TO_CODE.getOrDefault(korDept, "");
         return AnnouncementResponse.builder()
                 .id(item.getNewsItemId())
-                .title(item.getTitle())
-                .subTitle(item.getSubTitle1())
+                .title(decodeHtml(item.getTitle()))
+                .subTitle(decodeHtml(item.getSubTitle1()))
                 .department(korDept)
                 .deptCode(deptCode)
                 .date(date)
                 .url(item.getOriginalUrl())
                 .build();
+    }
+
+    private String decodeHtml(String s) {
+        if (s == null || s.isBlank()) return s;
+        return HtmlUtils.htmlUnescape(s);
     }
 }

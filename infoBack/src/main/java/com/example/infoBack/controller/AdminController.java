@@ -108,8 +108,7 @@ public class AdminController {
 
     @GetMapping("/users")
     public ResponseEntity<List<AdminUserResponse>> getAllUsers() {
-        List<AdminUserResponse> users = userRepository.findAll().stream()
-                .filter(u -> !"ADMIN".equals(u.getRole()))
+        List<AdminUserResponse> users = userRepository.findAllByRoleNot("ADMIN").stream()
                 .map(AdminUserResponse::from)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(users);
@@ -127,8 +126,11 @@ public class AdminController {
     public ResponseEntity<AdminStatsResponse> getStats() {
         long totalBenefits = benefitRepository.count();
 
-        long totalUsers = userRepository.findAll().stream()
-                .filter(u -> !"ADMIN".equals(u.getRole()))
+        List<User> nonAdminUsers = userRepository.findAllByRoleNot("ADMIN");
+        long totalUsers = nonAdminUsers.size();
+        LocalDateTime weekAgo = LocalDateTime.now().minusDays(7);
+        long newUsersThisWeek = nonAdminUsers.stream()
+                .filter(u -> u.getCreatedAt() != null && u.getCreatedAt().isAfter(weekAgo))
                 .count();
 
         Map<String, Long> byCategory = benefitRepository.findAll().stream()
@@ -136,12 +138,6 @@ public class AdminController {
                         b -> b.getCategory() != null ? b.getCategory() : "기타",
                         Collectors.counting()
                 ));
-
-        long newUsersThisWeek = userRepository.findAll().stream()
-                .filter(u -> !"ADMIN".equals(u.getRole())
-                        && u.getCreatedAt() != null
-                        && u.getCreatedAt().isAfter(LocalDateTime.now().minusDays(7)))
-                .count();
 
         return ResponseEntity.ok(new AdminStatsResponse(totalBenefits, totalUsers, byCategory, newUsersThisWeek));
     }

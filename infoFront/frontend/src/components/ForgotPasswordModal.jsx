@@ -81,7 +81,7 @@ function ForgotPasswordModal({ onClose }) {
             </h2>
             <p className="fp-desc">
               {step === 1
-                ? '가입 시 사용한 아이디(이메일)와 이름을 입력하세요.'
+                ? '가입 시 사용한 아이디와 이름을 입력하세요.'
                 : '새로 사용할 비밀번호를 입력하세요.'}
             </p>
 
@@ -90,13 +90,13 @@ function ForgotPasswordModal({ onClose }) {
             {step === 1 ? (
               <form onSubmit={handleStep1} className="fp-form">
                 <div className="fp-row">
-                  <label>아이디 (이메일)</label>
+                  <label>아이디</label>
                   <input
                     type="text"
                     name="userId"
                     value={form.userId}
                     onChange={handleChange}
-                    placeholder="가입한 이메일 입력"
+                    placeholder="가입한 아이디 입력"
                     autoFocus
                   />
                 </div>

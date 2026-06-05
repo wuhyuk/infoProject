@@ -2,17 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { updateProfile } from '../api/userApi';
 import { useAuth } from '../context/AuthContext';
+import {
+  REGIONS, DISABILITY_GRADES, EMPLOYMENT_OPTIONS, FAMILY_OPTIONS, MARITAL_OPTIONS,
+  CURRENT_YEAR, BIRTH_YEARS,
+} from '../constants/profileOptions';
 import './ProfileSetupPage.css';
-
-const REGIONS = [
-  '서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종',
-  '경기', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주',
-];
-
-const currentYear = new Date().getFullYear();
-const BIRTH_YEARS = Array.from({ length: 80 }, (_, i) => currentYear - 10 - i);
-
-const DISABILITY_GRADES = ['경증', '중증'];
 
 const EMPTY_FORM = {
   birthYear: '',
@@ -100,7 +94,7 @@ function ProfileSetupPage() {
                   ))}
                 </select>
                 {form.birthYear && (
-                  <p className="setup-hint">만 {currentYear - Number(form.birthYear)}세</p>
+                  <p className="setup-hint">만 {CURRENT_YEAR - Number(form.birthYear)}세</p>
                 )}
               </div>
 
@@ -137,33 +131,27 @@ function ProfileSetupPage() {
               <div className="setup-row">
                 <label>취업 상태</label>
                 <select name="employmentStatus" value={form.employmentStatus} onChange={handleChange}>
-                  <option value="">선택 안함</option>
-                  <option value="취업">취업 (직장인/재직자)</option>
-                  <option value="실업">실업 (미취업/구직중)</option>
-                  <option value="학생">학생</option>
-                  <option value="자영업">자영업</option>
+                  {EMPLOYMENT_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
                 </select>
               </div>
 
               <div className="setup-row">
                 <label>혼인 상태</label>
                 <select name="maritalStatus" value={form.maritalStatus} onChange={handleChange}>
-                  <option value="">선택 안함</option>
-                  <option value="미혼">미혼</option>
-                  <option value="기혼">기혼</option>
-                  <option value="이혼">이혼</option>
-                  <option value="사별">사별</option>
-                  <option value="별거">별거</option>
+                  {MARITAL_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
                 </select>
               </div>
 
               <div className="setup-row">
                 <label>가족 유형</label>
                 <select name="familyType" value={form.familyType} onChange={handleChange}>
-                  <option value="">선택 안함</option>
-                  <option value="1인가구">1인 가구</option>
-                  <option value="다자녀">다자녀 가구 (3자녀 이상)</option>
-                  <option value="한부모">한부모 가족</option>
+                  {FAMILY_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
                 </select>
               </div>
 

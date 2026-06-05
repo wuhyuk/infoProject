@@ -1,16 +1,7 @@
 import { createContext, useContext, useState } from 'react';
+import { isTokenValid } from '../utils/jwtUtils';
 
 const AdminContext = createContext(null);
-
-function isTokenValid(token) {
-  if (!token) return false;
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.exp * 1000 > Date.now();
-  } catch {
-    return false;
-  }
-}
 
 export function AdminProvider({ children }) {
   const [admin, setAdmin] = useState(() => {

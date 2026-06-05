@@ -1,17 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { getMyProfile } from '../api/userApi';
+import { isTokenValid } from '../utils/jwtUtils';
 
 const AuthContext = createContext(null);
-
-function isTokenValid(token) {
-  if (!token) return false;
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.exp * 1000 > Date.now();
-  } catch {
-    return false;
-  }
-}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {

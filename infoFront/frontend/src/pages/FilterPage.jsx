@@ -3,29 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getFilteredBenefits } from '../api/benefitApi';
 import { getMyProfile } from '../api/userApi';
 import { useAuth } from '../context/AuthContext';
+import { REGIONS, EMPLOYMENT_OPTIONS, FAMILY_OPTIONS, DISABILITY_GRADES, CURRENT_YEAR } from '../constants/profileOptions';
 import './FilterPage.css';
-
-const REGIONS = [
-  '서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종',
-  '경기', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주',
-];
-
-const EMPLOYMENT_OPTIONS = [
-  { value: '', label: '선택 안함' },
-  { value: '취업', label: '취업 (직장인/재직자)' },
-  { value: '실업', label: '실업 (미취업/구직중)' },
-  { value: '학생', label: '학생' },
-  { value: '자영업', label: '자영업' },
-];
-
-const FAMILY_OPTIONS = [
-  { value: '', label: '선택 안함' },
-  { value: '1인가구', label: '1인 가구' },
-  { value: '다자녀', label: '다자녀 가구 (3자녀 이상)' },
-  { value: '한부모', label: '한부모 가족' },
-];
-
-const DISABILITY_GRADES = ['경증', '중증'];
 
 // DB에 구 등급(1~6급)이 저장된 경우를 위한 하위 호환 변환
 const toSeverity = (grade) => {
@@ -91,9 +70,8 @@ function FilterPage() {
   };
 
   const handleProfileSearch = () => {
-    const currentYear = new Date().getFullYear();
     const payload = {
-      age: profile.birthYear ? currentYear - profile.birthYear : null,
+      age: profile.birthYear ? CURRENT_YEAR - profile.birthYear : null,
       gender: profile.gender || null,
       region: profile.region || null,
       incomeLevel: profile.incomeLevel || null,
@@ -134,7 +112,6 @@ function FilterPage() {
     doSearch(payload, form);
   };
 
-  const currentYear = new Date().getFullYear();
   const hasProfile = profile?.birthYear || profile?.region || profile?.employmentStatus;
 
   // 로그인 + 프로필 로딩 중
@@ -165,7 +142,7 @@ function FilterPage() {
               {profile.birthYear && (
                 <div className="profile-summary-item">
                   <span className="summary-label">나이</span>
-                  <span className="summary-value">{currentYear - profile.birthYear}세</span>
+                  <span className="summary-value">{CURRENT_YEAR - profile.birthYear}세</span>
                 </div>
               )}
               {profile.gender && (
