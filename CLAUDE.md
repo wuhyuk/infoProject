@@ -46,13 +46,13 @@ dto/
 ├── BenefitFilterRequest / BenefitResponse
 └── ErrorResponse
 controller/
-├── AuthController        POST /api/auth/signup, /login, /send-code, /verify-code (public)
+├── AuthController        GET /api/auth/check-id, POST /api/auth/signup, /login, /reset-password (public)
 ├── UserController        GET/PUT /api/users/me  (JWT 필요)
 ├── BenefitController     GET /api/benefits, POST /api/benefits/filter (public)
 ├── AdminController       /api/admin/** (관리자 권한)
 └── AnnouncementController GET /api/announcements (public)
 service/
-├── AuthService           회원가입, 로그인, 이메일 인증 코드
+├── AuthService           회원가입, 로그인, 비밀번호 재설정
 ├── UserService           프로필 조회/수정
 ├── BenefitService        필터링 로직
 ├── WelfareApiService     data.go.kr 복지 API 연동
@@ -72,8 +72,8 @@ context/
 └── AdminContext.jsx       관리자 인증 상태 관리
 api/
 ├── axiosInstance.js       JWT 인터셉터 + 401 시 자동 로그아웃
-├── authApi.js             signup, login, sendCode, verifyCode
-├── userApi.js             getMyProfile, updateProfile
+├── authApi.js             checkUserId, signup, login, resetPassword
+├── userApi.js             getMyProfile, updateProfile, updateAccount
 ├── benefitApi.js          getAllBenefits, getFilteredBenefits
 └── adminApi.js            관리자용 CRUD API
 pages/
@@ -95,7 +95,7 @@ pages/
 
 | 테이블 | 주요 컬럼 |
 |--------|-----------|
-| `users` | id, email(unique), password(bcrypt), name, created_at |
+| `users` | id, email(unique, Java필드명 userId), password(bcrypt), name, role, provider, provider_id, created_at |
 | `user_profile` | id, user_id(FK), birth_year, gender, region, income_level, employment_status, has_disability, family_type |
 | `benefit` | id, title, category, description, min_age, max_age, target_region, max_income_level, employment_status, requires_disability, disability_grade, family_type, requires_gender, requires_foreign_worker, requires_north_korean, min_children, apply_url, organization |
 

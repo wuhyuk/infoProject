@@ -1,4 +1,5 @@
-DELETE FROM benefit;
+-- source IS NULL 인 시드 데이터만 초기화 (API 동기화 데이터·관리자 수동 등록은 보존)
+DELETE FROM benefit WHERE source IS NULL;
 
 INSERT INTO benefit (title, category, description, min_age, max_age, target_region, max_income_level, employment_status, requires_disability, family_type, requires_gender, requires_foreign_worker, requires_north_korean, disability_grade, min_children, apply_url, organization) VALUES
 

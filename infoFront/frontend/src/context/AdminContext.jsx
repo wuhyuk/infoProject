@@ -5,25 +5,25 @@ const AdminContext = createContext(null);
 
 export function AdminProvider({ children }) {
   const [admin, setAdmin] = useState(() => {
-    const token = localStorage.getItem('adminToken');
-    const stored = localStorage.getItem('adminUser');
+    const token = sessionStorage.getItem('adminToken');
+    const stored = sessionStorage.getItem('adminUser');
     if (!isTokenValid(token)) {
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
+      sessionStorage.removeItem('adminToken');
+      sessionStorage.removeItem('adminUser');
       return null;
     }
     return stored ? JSON.parse(stored) : null;
   });
 
   const loginAdmin = (adminData, token) => {
-    localStorage.setItem('adminToken', token);
-    localStorage.setItem('adminUser', JSON.stringify(adminData));
+    sessionStorage.setItem('adminToken', token);
+    sessionStorage.setItem('adminUser', JSON.stringify(adminData));
     setAdmin(adminData);
   };
 
   const logoutAdmin = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
+    sessionStorage.removeItem('adminToken');
+    sessionStorage.removeItem('adminUser');
     setAdmin(null);
   };
 

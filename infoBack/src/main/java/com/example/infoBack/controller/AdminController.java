@@ -6,6 +6,7 @@ import com.example.infoBack.entity.User;
 import com.example.infoBack.repository.BenefitRepository;
 import com.example.infoBack.repository.UserRepository;
 import com.example.infoBack.security.JwtUtil;
+import com.example.infoBack.service.WelfareApiService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class AdminController {
     private final BenefitRepository benefitRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final WelfareApiService welfareApiService;
 
     // ─── 관리자 로그인 ────────────────────────────────────────────────────────
 
@@ -95,6 +97,7 @@ public class AdminController {
         benefit.setMinChildren(req.getMinChildren());
         benefit.setApplyUrl(req.getApplyUrl());
         benefit.setOrganization(req.getOrganization());
+        benefit.setSource("manual"); // 관리자 수정 시 수동 관리로 전환 → 이후 API 동기화 덮어씌움 방지
         return ResponseEntity.ok(benefitRepository.save(benefit));
     }
 
@@ -102,6 +105,16 @@ public class AdminController {
     public ResponseEntity<Void> deleteBenefit(@PathVariable Long id) {
         benefitRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/benefits/sync")
+    public ResponseEntity<Map<String, Object>> triggerSync() {
+        WelfareApiService.SyncResult result = welfareApiService.syncAll();
+        return ResponseEntity.ok(Map.of(
+                "synced",   result.total(),
+                "created",  result.created(),
+                "updated",  result.updated()
+        ));
     }
 
     // ─── 사용자 관리 ──────────────────────────────────────────────────────────
@@ -125,18 +138,14 @@ public class AdminController {
     @GetMapping("/stats")
     public ResponseEntity<AdminStatsResponse> getStats() {
         long totalBenefits = benefitRepository.count();
-
-        List<User> nonAdminUsers = userRepository.findAllByRoleNot("ADMIN");
-        long totalUsers = nonAdminUsers.size();
+        long totalUsers = userRepository.countByRoleNot("ADMIN");
         LocalDateTime weekAgo = LocalDateTime.now().minusDays(7);
-        long newUsersThisWeek = nonAdminUsers.stream()
-                .filter(u -> u.getCreatedAt() != null && u.getCreatedAt().isAfter(weekAgo))
-                .count();
+        long newUsersThisWeek = userRepository.countByRoleNotAndCreatedAtAfter("ADMIN", weekAgo);
 
-        Map<String, Long> byCategory = benefitRepository.findAll().stream()
-                .collect(Collectors.groupingBy(
-                        b -> b.getCategory() != null ? b.getCategory() : "기타",
-                        Collectors.counting()
+        Map<String, Long> byCategory = benefitRepository.countByCategory().stream()
+                .collect(Collectors.toMap(
+                        row -> (String) row[0],
+                        row -> (Long) row[1]
                 ));
 
         return ResponseEntity.ok(new AdminStatsResponse(totalBenefits, totalUsers, byCategory, newUsersThisWeek));

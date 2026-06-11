@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../context/AdminContext';
+import { isTokenValid } from '../utils/jwtUtils';
 import {
-  getAdminBenefits, createBenefit, updateBenefit, deleteBenefit,
+  getAdminBenefits, createBenefit, updateBenefit, deleteBenefit, syncBenefits,
   getAdminUsers, deleteUser, getAdminStats,
 } from '../api/adminApi';
 import './AdminPage.css';
@@ -23,6 +24,12 @@ const EMPTY_BENEFIT = {
 
 // ─── 혜택 관리 ───────────────────────────────────────────────────────────────
 
+function SourceBadge({ source }) {
+  if (source === 'api')    return <span className="source-badge source-api">공공API</span>;
+  if (source === 'manual') return <span className="source-badge source-manual">수동</span>;
+  return <span className="source-badge source-seed">기본</span>;
+}
+
 function BenefitManagement() {
   const [benefits, setBenefits] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,6 +38,8 @@ function BenefitManagement() {
   const [form, setForm] = useState(EMPTY_BENEFIT);
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState('');
+  const [syncing, setSyncing] = useState(false);
+  const [syncMsg, setSyncMsg] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -59,10 +68,31 @@ function BenefitManagement() {
     setModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('이 혜택을 삭제하시겠습니까?')) return;
-    await deleteBenefit(id);
-    load();
+  const handleDelete = async (b) => {
+    const msg = b.source === 'api'
+      ? 'API 출처 혜택은 다음 동기화 시 다시 추가될 수 있습니다. 그래도 삭제하시겠습니까?'
+      : '이 혜택을 삭제하시겠습니까?';
+    if (!window.confirm(msg)) return;
+    try {
+      await deleteBenefit(b.id);
+      load();
+    } catch {
+      alert('삭제 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
+  };
+
+  const handleSync = async () => {
+    setSyncing(true);
+    setSyncMsg('');
+    try {
+      const { data } = await syncBenefits();
+      setSyncMsg(`동기화 완료 — 신규 ${data.created}건 / 갱신 ${data.updated}건`);
+      load();
+    } catch {
+      setSyncMsg('동기화 실패. 잠시 후 다시 시도해주세요.');
+    } finally {
+      setSyncing(false);
+    }
   };
 
   const handleSave = async (e) => {
@@ -80,6 +110,8 @@ function BenefitManagement() {
       else await createBenefit(payload);
       setModalOpen(false);
       load();
+    } catch {
+      alert('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
     } finally {
       setSaving(false);
     }
@@ -105,6 +137,10 @@ function BenefitManagement() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          <button className="btn-sync" onClick={handleSync} disabled={syncing}>
+            {syncing ? '동기화 중...' : '공공API 동기화'}
+          </button>
+          {syncMsg && <span className="sync-msg">{syncMsg}</span>}
           <button className="btn-primary" onClick={openCreate}>+ 새 혜택 추가</button>
         </div>
       </div>
@@ -116,7 +152,7 @@ function BenefitManagement() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th>ID</th><th>제목</th><th>카테고리</th><th>지역</th><th>소득분위</th><th>기관</th><th>관리</th>
+                <th>ID</th><th>제목</th><th>카테고리</th><th>출처</th><th>지역</th><th>소득분위</th><th>기관</th><th>관리</th>
               </tr>
             </thead>
             <tbody>
@@ -125,12 +161,13 @@ function BenefitManagement() {
                   <td className="td-id">{b.id}</td>
                   <td className="td-title">{b.title}</td>
                   <td><span className="tag">{b.category}</span></td>
+                  <td><SourceBadge source={b.source} /></td>
                   <td>{b.targetRegion ?? '전국'}</td>
                   <td>{b.maxIncomeLevel ? `${b.maxIncomeLevel}분위 이하` : '제한 없음'}</td>
                   <td>{b.organization}</td>
                   <td className="td-actions">
                     <button className="btn-edit" onClick={() => openEdit(b)}>수정</button>
-                    <button className="btn-delete" onClick={() => handleDelete(b.id)}>삭제</button>
+                    <button className="btn-delete" onClick={() => handleDelete(b)}>삭제</button>
                   </td>
                 </tr>
               ))}
@@ -147,6 +184,11 @@ function BenefitManagement() {
               <h3>{editing ? '혜택 수정' : '새 혜택 추가'}</h3>
               <button className="modal-close" onClick={() => setModalOpen(false)}>✕</button>
             </div>
+            {editing && benefits.find(b => b.id === editing)?.source === 'api' && (
+              <div className="edit-api-notice">
+                공공API 출처 혜택입니다. 수정하면 이후 자동 동기화에서 제외되어 수동 관리됩니다.
+              </div>
+            )}
             <form onSubmit={handleSave} className="benefit-form">
               <div className="form-grid">
                 <div className="form-col-full">
@@ -265,8 +307,12 @@ function UserManagement() {
 
   const handleDelete = async (id, name) => {
     if (!window.confirm(`"${name}" 사용자를 삭제하시겠습니까?`)) return;
-    await deleteUser(id);
-    load();
+    try {
+      await deleteUser(id);
+      load();
+    } catch {
+      alert('삭제 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
   };
 
   const filtered = users.filter(
@@ -325,15 +371,17 @@ function UserManagement() {
 function StatsPanel() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     getAdminStats()
       .then(({ data }) => setStats(data))
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <div className="admin-section"><div className="loading-msg">불러오는 중...</div></div>;
-  if (!stats) return null;
+  if (error || !stats) return <div className="admin-section"><div className="empty-msg">통계를 불러올 수 없습니다.</div></div>;
 
   const maxCount = Math.max(...Object.values(stats.benefitsByCategory));
 
@@ -392,11 +440,20 @@ function AdminPage() {
   const { admin, logoutAdmin } = useAdminAuth();
   const [activeTab, setActiveTab] = useState('benefits');
 
-  useEffect(() => {
-    if (!admin) navigate('/admin/login', { replace: true });
-  }, [admin, navigate]);
+  const token = sessionStorage.getItem('adminToken');
+  const tokenValid = isTokenValid(token);
 
-  if (!admin) return null;
+  useEffect(() => {
+    if (!admin && !tokenValid) {
+      navigate('/admin/login', { replace: true });
+    }
+  }, [admin, tokenValid, navigate]);
+
+  // 세션 없음 → 리다이렉트 대기
+  if (!admin && !tokenValid) return null;
+
+  // 토큰은 유효하지만 context 상태가 아직 커밋되지 않은 짧은 타이밍 (로그인 직후)
+  if (!admin) return <div className="loading-msg" style={{ padding: '60px', textAlign: 'center' }}>로딩 중...</div>;
 
   const handleLogout = () => {
     logoutAdmin();

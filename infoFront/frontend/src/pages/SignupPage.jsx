@@ -7,7 +7,7 @@ import './AuthPage.css';
 function SignupPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ userId: '', name: '', password: '', passwordConfirm: '' });
-  const [idStatus, setIdStatus] = useState('idle'); // 'idle' | 'checking' | 'available' | 'taken'
+  const [idStatus, setIdStatus] = useState('idle'); // 'idle'(초기) | 'checking'(확인중) | 'available'(사용가능) | 'taken'(중복)
   const [fieldErrors, setFieldErrors] = useState({});
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);

@@ -29,7 +29,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updateProfile(auth.getName(), request));
     }
 
-    @PutMapping("/me/account")
+    @PatchMapping("/me/account")
     public ResponseEntity<UserProfileResponse> updateAccount(
             Authentication auth,
             @RequestBody UserAccountUpdateRequest request) {

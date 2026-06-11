@@ -25,7 +25,11 @@ function AdminLoginPage() {
       loginAdmin({ name: data.name, userId: data.userId }, data.token);
       navigate('/admin');
     } catch (err) {
-      setError(err.response?.data?.message || '아이디 또는 비밀번호가 올바르지 않습니다.');
+      if (!err.response) {
+        setError('서버에 연결할 수 없습니다. 백엔드가 실행 중인지 확인해주세요.');
+      } else {
+        setError(err.response.data?.message || '아이디 또는 비밀번호가 올바르지 않습니다.');
+      }
     } finally {
       setLoading(false);
     }

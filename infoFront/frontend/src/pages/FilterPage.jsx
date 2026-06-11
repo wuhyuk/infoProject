@@ -112,7 +112,9 @@ function FilterPage() {
     doSearch(payload, form);
   };
 
-  const hasProfile = profile?.birthYear || profile?.region || profile?.employmentStatus;
+  const hasProfile = profile?.birthYear || profile?.region || profile?.employmentStatus
+    || profile?.incomeLevel || profile?.hasDisability || profile?.familyType
+    || profile?.isForeignWorker || profile?.isNorthKoreanDefector;
 
   // 로그인 + 프로필 로딩 중
   if (user && profileLoading) {

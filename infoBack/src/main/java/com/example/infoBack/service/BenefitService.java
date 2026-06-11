@@ -64,12 +64,15 @@ public class BenefitService {
 
     private boolean matchesEmploymentStatus(Benefit b, String status) {
         if (b.getEmploymentStatus() == null) return true;
-        if (status == null) return false;
-        return b.getEmploymentStatus().equals(status);
+        String effective = (status == null) ? "실업" : status;
+        return b.getEmploymentStatus().equals(effective);
     }
 
     private boolean matchesDisability(Benefit b, Boolean hasDisability) {
-        if (!Boolean.TRUE.equals(b.getRequiresDisability())) return true;
+        String title = b.getTitle() != null ? b.getTitle() : "";
+        boolean required = Boolean.TRUE.equals(b.getRequiresDisability())
+                || title.contains("장애인");
+        if (!required) return true;
         return Boolean.TRUE.equals(hasDisability);
     }
 
@@ -80,17 +83,31 @@ public class BenefitService {
     }
 
     private boolean matchesGender(Benefit b, String gender) {
-        if (b.getRequiresGender() == null) return true;
-        return b.getRequiresGender().equals(gender);
+        String required = b.getRequiresGender();
+        if (required == null && b.getTitle() != null) {
+            String title = b.getTitle();
+            boolean hasFemale = title.contains("여성");
+            boolean hasMale   = title.contains("남성");
+            if (hasFemale && !hasMale) required = "여성";
+            else if (hasMale && !hasFemale) required = "남성";
+        }
+        if (required == null) return true;
+        return required.equals(gender);
     }
 
     private boolean matchesForeignWorker(Benefit b, Boolean isForeignWorker) {
-        if (!Boolean.TRUE.equals(b.getRequiresForeignWorker())) return true;
+        String title = b.getTitle() != null ? b.getTitle() : "";
+        boolean required = Boolean.TRUE.equals(b.getRequiresForeignWorker())
+                || title.contains("외국인근로자") || title.contains("외국인 근로자");
+        if (!required) return true;
         return Boolean.TRUE.equals(isForeignWorker);
     }
 
     private boolean matchesNorthKorean(Benefit b, Boolean isNorthKorean) {
-        if (!Boolean.TRUE.equals(b.getRequiresNorthKorean())) return true;
+        String title = b.getTitle() != null ? b.getTitle() : "";
+        boolean required = Boolean.TRUE.equals(b.getRequiresNorthKorean())
+                || title.contains("북한이탈주민") || title.contains("탈북민");
+        if (!required) return true;
         return Boolean.TRUE.equals(isNorthKorean);
     }
 

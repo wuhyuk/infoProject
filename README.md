@@ -13,7 +13,7 @@
 | 혜택 필터링 | 나이 · 지역 · 소득분위 · 취업상태 · 장애 · 성별 · 가족유형 · 자녀 수 등 다중 조건 필터 |
 | 결과 내 검색 | 필터 결과 화면에서 혜택 이름 · 설명 · 기관으로 즉시 검색 + 카테고리 탭 필터 |
 | 정책 소식 검색 | 정책 소식 목록에서 제목 · 부제목 키워드 검색 + 부처별 탭 필터 |
-| 회원 인증 | 이메일 인증 기반 회원가입 / JWT 로그인 / 비밀번호 찾기 |
+| 회원 인증 | 아이디 기반 회원가입 / JWT 로그인 / 비밀번호 재설정 |
 | 소셜 로그인 | Google · Naver OAuth2 연동 |
 | 마이페이지 | 개인 프로필 조회 · 수정, 로그인 시 필터 폼 자동 채우기 |
 | 정책 소식 | 공공데이터 보도자료 API 연동 (30분 주기 갱신) |
@@ -161,8 +161,10 @@ npm start
 
 | 메서드 | 경로 | 설명 | 인증 |
 |--------|------|------|------|
+| GET  | `/api/auth/check-id` | 아이디 중복 확인 | 불필요 |
 | POST | `/api/auth/signup` | 회원가입 | 불필요 |
 | POST | `/api/auth/login` | 로그인 (JWT 발급) | 불필요 |
+| POST | `/api/auth/reset-password` | 비밀번호 재설정 | 불필요 |
 | GET | `/api/users/me` | 내 프로필 조회 | JWT |
 | PUT | `/api/users/me` | 내 프로필 수정 | JWT |
 | GET | `/api/benefits` | 전체 혜택 목록 | 불필요 |
@@ -193,24 +195,9 @@ npm start
 
 | 테이블 | 주요 컬럼 |
 |--------|-----------|
-| `users` | id, email(unique), password(bcrypt), name, created_at |
+| `users` | id, email(unique, userId 필드 매핑), password(bcrypt), name, role, provider, created_at |
 | `user_profile` | id, user_id(FK), birth_year, gender, region, income_level, employment_status, has_disability, family_type |
 | `benefit` | id, title, category, description, min_age, max_age, target_region, max_income_level, employment_status, requires_disability, disability_grade, family_type, requires_gender, requires_foreign_worker, requires_north_korean, min_children, apply_url, organization |
-
----
-
-## 이메일 인증 설정 (선택)
-
-`application.properties`에서 Gmail SMTP 주석을 해제하고 앱 비밀번호를 입력하면 실제 인증 메일이 발송됩니다. 설정하지 않으면 인증 코드가 백엔드 콘솔에 출력됩니다.
-
-```properties
-spring.mail.host=smtp.gmail.com
-spring.mail.port=587
-spring.mail.username=your-email@gmail.com
-spring.mail.password=your-app-password
-spring.mail.properties.mail.smtp.auth=true
-spring.mail.properties.mail.smtp.starttls.enable=true
-```
 
 ---
 
