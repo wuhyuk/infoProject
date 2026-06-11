@@ -267,7 +267,9 @@ public class PolicyNewsService {
                 date = LocalDateTime.parse(item.getApproveDate().trim(), API_DATE_FMT)
                         .toLocalDate()
                         .format(DISPLAY_FMT);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                log.debug("날짜 파싱 실패 (원문: '{}'): {}", item.getApproveDate(), e.getMessage());
+            }
         }
         String korDept  = resolveDept(item);
         String deptCode = DEPT_TO_CODE.getOrDefault(korDept, "");

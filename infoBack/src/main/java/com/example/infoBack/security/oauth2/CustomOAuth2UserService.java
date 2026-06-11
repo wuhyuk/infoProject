@@ -20,6 +20,8 @@ import java.util.Optional;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private static final Logger log = LoggerFactory.getLogger(CustomOAuth2UserService.class);
+    // BCrypt 패턴이 아니므로 어떤 비밀번호로도 일치하지 않아 보안상 안전
+    private static final String SOCIAL_ONLY_PASSWORD = "SOCIAL_LOGIN_ONLY";
 
     private final UserRepository userRepository;
 
@@ -63,13 +65,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         // 신규 소셜 사용자 등록
-        // password 컬럼이 DB 레벨에서 NOT NULL인 경우를 대비해 로그인 불가 플레이스홀더를 저장
-        // BCrypt 패턴이 아니므로 어떤 비밀번호로도 일치하지 않아 보안상 안전
         log.info("신규 소셜 사용자 등록: provider={}, email={}", provider, email);
         User newUser = User.builder()
                 .userId(email)
                 .name(name != null ? name : email)
-                .password("SOCIAL_LOGIN_ONLY")
+                .password(SOCIAL_ONLY_PASSWORD)
                 .provider(provider)
                 .providerId(providerId)
                 .build();

@@ -105,7 +105,22 @@
       "Bash(Find *)",
       "PowerShell(Get-ChildItem -Path \"C:\\\\infoProject\\\\infoFront\\\\frontend\" -Depth 1 | Where-Object { -not $_.PSIsContainer -or $_.Name -in @\\('src','public','node_modules'\\) } | Select-Object Name)",
       "Bash(npx react-scripts *)",
-      "Bash(Select-Object -Property FullName)"
+      "Bash(Select-Object -Property FullName)",
+      "Bash(git filter-repo *)",
+      "Bash(python -m pip show git-filter-repo)",
+      "Bash(pip install *)",
+      "Bash(pip3 install *)",
+      "PowerShell(pip *)",
+      "PowerShell(python -m pip install git-filter-repo 2>&1 | Select-Object -Last 5)",
+      "Bash(git branch *)",
+      "Bash(git filter-branch --tree-filter ' *)",
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --tree-filter ' *)",
+      "Bash(xargs '-I{}' sh -c 'hash=$\\(echo {} | cut -d\" \" -f1\\); content=$\\(git show $hash -- infoBack/src/main/resources/application.properties 2>/dev/null | grep -E \"1C7PVW463|53TD5GRbR1|NeCuaSxkAD|8f0c038ccd\" | head -1\\); if [ -n \"$content\" ]; then echo \"FOUND IN $hash: $content\"; fi')",
+      "Bash(xargs -r git update-ref -d)",
+      "Bash(git gc *)",
+      "Bash(git reflog *)",
+      "Bash(git fsck *)",
+      "Bash(git update-ref *)"
     ]
   }
 }

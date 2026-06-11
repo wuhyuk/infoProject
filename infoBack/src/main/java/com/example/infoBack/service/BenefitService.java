@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class BenefitService {
 
+    private static final String NATIONWIDE = "전국";
+
     private final BenefitRepository benefitRepository;
 
     public List<BenefitResponse> getAllBenefits() {
@@ -51,7 +53,7 @@ public class BenefitService {
     }
 
     private boolean matchesRegion(Benefit b, String region) {
-        if (b.getTargetRegion() == null || b.getTargetRegion().equals("전국")) return true;
+        if (b.getTargetRegion() == null || b.getTargetRegion().equals(NATIONWIDE)) return true;
         if (region == null) return false;
         return b.getTargetRegion().contains(region) || region.contains(b.getTargetRegion());
     }

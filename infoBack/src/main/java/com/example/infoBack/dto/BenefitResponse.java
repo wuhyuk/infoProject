@@ -6,6 +6,8 @@ import lombok.Getter;
 @Getter
 public class BenefitResponse {
 
+    private static final String NATIONWIDE = "전국";
+
     private Long id;
     private String title;
     private String category;
@@ -34,7 +36,7 @@ public class BenefitResponse {
             if (b.getMaxAge() != null) sb.append(b.getMaxAge()).append("세");
             sb.append(" ");
         }
-        if (b.getTargetRegion() != null && !b.getTargetRegion().equals("전국")) {
+        if (b.getTargetRegion() != null && !b.getTargetRegion().equals(NATIONWIDE)) {
             sb.append(b.getTargetRegion()).append(" ");
         }
         if (b.getMaxIncomeLevel() != null) {

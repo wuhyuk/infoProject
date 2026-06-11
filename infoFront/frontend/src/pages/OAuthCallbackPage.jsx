@@ -24,8 +24,7 @@ function OAuthCallbackPage() {
         const isNewProfile = !data.birthYear && !data.region && !data.employmentStatus;
         navigate(isNewProfile ? '/profile-setup' : '/filter', { replace: true });
       })
-      .catch((err) => {
-        console.error('[OAuth] getMyProfile 실패:', err?.response?.status, err?.response?.data);
+      .catch(() => {
         sessionStorage.removeItem('token');
         navigate('/login?error=oauth_failed', { replace: true });
       });

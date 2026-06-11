@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 public class WelfareApiProperties {
     private String key;
     private String centralUrl;
-    private String centralDetailUrl;
-    private String localUrl;
     private String newsUrl;
     private String syncCron;
     private String newsRefreshCron;
